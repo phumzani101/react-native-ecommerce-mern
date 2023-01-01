@@ -10,8 +10,14 @@ const CategorySchema = new Schema(
     },
     image: String,
     description: String,
+    icon: String,
+    color: String,
   },
   { timestamps: true }
 );
+
+CategorySchema.static("isValidId", function isValidId(id) {
+  return mongoose.isValidObjectId(id);
+});
 
 export default mongoose.model("CategoryModel", CategorySchema);

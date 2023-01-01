@@ -9,4 +9,6 @@ router
   .put(orderController.update)
   .delete(orderController.remove);
 
+router.param("orderId", orderController.orderById);
+
 export default router;

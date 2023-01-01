@@ -9,4 +9,6 @@ router
   .put(categoryController.update)
   .delete(categoryController.remove);
 
+router.param("categoryId", categoryController.categoryById);
+
 export default router;

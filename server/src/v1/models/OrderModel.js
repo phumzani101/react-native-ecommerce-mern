@@ -18,4 +18,8 @@ const OrderSchema = new Schema(
   { timestamps: true }
 );
 
+OrderSchema.static("isValidId", function isValidId(id) {
+  return mongoose.isValidObjectId(id);
+});
+
 export default mongoose.model("OrderModel", OrderSchema);

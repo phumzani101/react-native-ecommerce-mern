@@ -1,38 +1,44 @@
+import ErrorHelper from "../helpers/errorHelper.js";
+import { catchAsyncErrors } from "../middlewares/errorMiddleware.js";
 import CategoryModel from "../models/CategoryModel.js";
 
-const list = async (req, res) => {
+const list = catchAsyncErrors(async (req, res, next) => {
   const categories = await CategoryModel.find();
   return res.json({ categories });
-};
+});
 
-const create = async (req, res) => {
+const create = catchAsyncErrors(async (req, res, next) => {
   const category = await CategoryModel.create(req.body);
   return res.json({ category });
-};
+});
 
-const categoryById = async (req, res, next, id) => {
+const categoryById = catchAsyncErrors(async (req, res, next, id) => {
+  if (!CategoryModel.isValidId(id)) {
+    return next(new ErrorHelper("Category ID not Valid", 400));
+  }
+
   const category = await CategoryModel.findById(id);
   if (!category) {
-    return res.json({ error: "Category not found" });
+    return next(new ErrorHelper("Category not found", 404));
   }
   req.category = category;
   return next();
-};
+});
 
-const read = (req, res) => {
+const read = catchAsyncErrors(async (req, res, next) => {
   const category = req.category;
   return res.json({ category });
-};
+});
 
-const update = (req, res) => {
+const update = catchAsyncErrors(async (req, res, next) => {
   const category = req.category;
   return res.json({ category });
-};
+});
 
-const remove = async (req, res) => {
+const remove = catchAsyncErrors(async (req, res, next) => {
   const category = req.category;
   await category.remove();
   return res.json({ category });
-};
+});
 
 export default { list, create, read, update, remove, categoryById };
