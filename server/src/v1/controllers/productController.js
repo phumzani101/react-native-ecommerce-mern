@@ -45,6 +45,7 @@ const list = catchAsyncErrors(async (req, res, next) => {
 });
 
 const create = catchAsyncErrors(async (req, res, next) => {
+  let files = req.files && Object.values(req.files).flat();
   const {
     name,
     tagline,
@@ -74,6 +75,17 @@ const create = catchAsyncErrors(async (req, res, next) => {
     user: req.auth._id,
   });
 
+  if (files && files?.length !== 0) {
+    console.log("files", files);
+    let images = files.map((img) => {
+      let path = `${req.protocol}://${req.get("host")}/uploads/${
+        req.file.filename
+      }`;
+      return path;
+    });
+    product.images.push(...images);
+  }
+
   product = await product.save();
   return res.json({ product });
 });
@@ -95,6 +107,16 @@ const read = catchAsyncErrors(async (req, res, next) => {
 const update = catchAsyncErrors(async (req, res, next) => {
   let product = req.product;
   product = _.extend(product, req.body);
+  if (files && files?.length !== 0) {
+    console.log("files", files);
+    let images = files.map((img) => {
+      let path = `${req.protocol}://${req.get("host")}/uploads/${
+        req.file.filename
+      }`;
+      return path;
+    });
+    product.images.push(...images);
+  }
   await product.save();
   return res.json({ product });
 });

@@ -1,3 +1,4 @@
+import _ from "lodash";
 import ErrorHelper from "../helpers/errorHelper.js";
 import { catchAsyncErrors } from "../middlewares/errorMiddleware.js";
 import UserModel from "../models/UserModel.js";
@@ -26,8 +27,10 @@ const read = (req, res, next) => {
   return res.json({ user });
 };
 
-const update = catchAsyncErrors((req, res, next) => {
-  const user = req.user;
+const update = catchAsyncErrors(async (req, res, next) => {
+  let user = req.user;
+  user = _.extend(user, req.body);
+  await user.save();
   return res.json({ user });
 });
 
@@ -38,8 +41,8 @@ const remove = catchAsyncErrors(async (req, res, next) => {
 });
 
 const count = catchAsyncErrors(async (req, res, next) => {
-  const productCount = await ProductModel.countDocuments();
-  return res.json({ productCount });
+  const userCount = await ProductModel.countDocuments();
+  return res.json({ userCount });
 });
 
 export default { list, create, read, update, remove, userById, count };

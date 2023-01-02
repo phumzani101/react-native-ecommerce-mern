@@ -38,8 +38,8 @@ yarn-error.log*
 .vercel
 
 # /public/images/
-/public/images/uploads/users/*
-/public/images/uploads/listings/*
+/public/uploads
+public/uploads/
 /public/img
 /public/assets/users/*
 /public/assets/listings/*

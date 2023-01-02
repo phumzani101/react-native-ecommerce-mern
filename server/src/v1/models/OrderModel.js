@@ -3,20 +3,49 @@ const { Schema } = mongoose;
 
 const OrderSchema = new Schema(
   {
-    name: {
+    items: [
+      {
+        product: {
+          type: Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        quantity: { type: Number, required: true },
+      },
+    ],
+    shippingAddress: { type: String, required: true },
+    city: { type: String, required: true },
+    zip: { type: String, required: true },
+    country: { type: String, required: true },
+    phone: { type: String, required: true },
+    status: {
       type: String,
-      trim: true,
-      required: true,
+      enum: ["pending", "processing", "delivered"],
+      default: "pending",
     },
-    image: String,
-    description: String,
-    countInStock: {
-      type: Number,
-      default: 0,
+    totalPrice: { type: Number },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
   { timestamps: true }
 );
+
+OrderSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "user",
+    model: "User",
+    // select: "name avatar createdAt",
+  }).populate({
+    path: "items.product",
+    model: "Product",
+    // select: "name slug",
+  });
+
+  next();
+});
 
 OrderSchema.static("isValidId", function isValidId(id) {
   return mongoose.isValidObjectId(id);

@@ -31,7 +31,9 @@ const read = catchAsyncErrors(async (req, res, next) => {
 });
 
 const update = catchAsyncErrors(async (req, res, next) => {
-  const category = req.category;
+  let category = req.category;
+  category = _.extend(category, req.body);
+  await category.save();
   return res.json({ category });
 });
 
